@@ -1,0 +1,70 @@
+﻿@model ExamenFinalMVC.Models.Categorias
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>Categorias</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" asp-controller="Categorias" method="post" id="formulario">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdCategoria" />
+            <div class="form-group">
+                <label asp-for="NombreCategoria" class="control-label"></label>
+                <input asp-for="NombreCategoria" class="form-control" />
+                <span asp-validation-for="NombreCategoria" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="button" value="Edit whit Ajax" class="btn btn-warning" id="EditAjax" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+<script src="~/js/sweetalert2.all.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#EditAjax").click(function (event) {
+            var form = $("#formulario");
+            $.ajax({
+                url: "/Categorias/EditConAjax",
+                data: form.serialize(), method: "POST",
+               success: function (resultado) {
+                    if (resultado != null) {
+                    Swal.fire({
+                        type: 'success',
+                        title: '<strong>Registro Editado!!!</strong>',
+                        text: resultado.mensaje,
+                        confirmButtonText: 'Ok'
+                    }).then((result) => {
+                        if (result.value) { window.location.href = '@Url.Action("Index", "Categorias")' }
+                    });
+                } else {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: resultado.mensaje
+                    })
+                }
+}
+            });
+        });
+    });</script>
